@@ -20,8 +20,8 @@ runs:
           autoconf \
           automake \
           libtool \
-          util-linux
-
+          util-linux \
+          shellcheck
         luarocks install luacheck 0.26.1
         gem install coveralls-lcov
       shell: bash
