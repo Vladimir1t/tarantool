@@ -142,6 +142,8 @@ jobs:
       image: docker.io/tarantool/testing:ubuntu-focal
 
     steps:
+      - name: Install deps
+        uses: ./.github/actions/install-deps-debian
       - name: Prepare checkout
         uses: tarantool/actions/prepare-checkout@master
       - uses: actions/checkout@v4
@@ -149,16 +151,23 @@ jobs:
           fetch-depth: 0
           submodules: recursive
       - name: Run ShellCheck
-        uses: ludeeus/action-shellcheck@master
+        uses: reviewdog/action-shellcheck@v1
         with:
-          ignore_paths: >-
-            third_party/*
-            test-run/*
-            static-build/make_packages.sh
-            tools/check-downgrade-versions.sh
-            tools/check-entrypoint-tag.sh
-            tools/check_push_master.sh
-            tools/run-jepsen-tests.sh
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          check_all_files_with_shebangs: "false"
+          pattern: |
+            *.bash
+            *.sh
+          exclude: |
+            */.git/*
+            ./third_party/*
+            ./test-run/*
+            ./static-build/make_packages.sh
+            ./tools/check-downgrade-versions.sh
+            ./tools/check-entrypoint-tag.sh
+            ./tools/check_push_master.sh
+            ./tools/run-jepsen-tests.sh
       - name: Send VK Teams message on failure
         if: failure()
         uses: ./.github/actions/report-job-status

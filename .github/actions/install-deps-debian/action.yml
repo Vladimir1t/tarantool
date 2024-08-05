@@ -21,7 +21,8 @@ runs:
           automake \
           libtool \
           util-linux \
-          shellcheck
+          shellcheck \
+          jq
 
         luarocks install luacheck 0.26.1
         gem install coveralls-lcov
