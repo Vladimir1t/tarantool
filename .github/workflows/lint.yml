@@ -148,20 +148,17 @@ jobs:
         with:
           fetch-depth: 0
           submodules: recursive
-      - id: ShellCheck
-        name: Differential ShellCheck
-        uses: redhat-plumbers-in-action/differential-shellcheck@v5
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          exclude-path:
-            - third_party
-            - test-run
-      - if: always()
-        name: Upload artifact with ShellCheck defects in SARIF format
-        uses: actions/upload-artifact@v4
-        with:
-          name: ShellCheck SARIF
-          path: ${{ steps.ShellCheck.outputs.sarif }}
+          ignore_paths: >-
+            third_party/*
+            test-run/*
+            static-build/make_packages.sh
+            tools/check-downgrade-versions.sh
+            tools/check-entrypoint-tag.sh
+            tools/check_push_master.sh
+            tools/run-jepsen-tests.sh
       - name: Send VK Teams message on failure
         if: failure()
         uses: ./.github/actions/report-job-status
